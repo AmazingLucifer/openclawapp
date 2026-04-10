@@ -1,14 +1,15 @@
 {
   "name": "openclaw-app",
   "version": "1.0.0",
-  "description": "OpenClaw Desktop App - One-click installer for OpenClaw AI assistant",
-  "main": "main.js",
+  "description": "OpenClaw Desktop App - Beautiful AI Chat Client",
+  "main": "electron/main.js",
   "scripts": {
-    "start": "electron .",
-    "build": "electron-builder --win",
-    "build:dir": "electron-builder --win --dir"
+    "dev": "npm run build:web && electron .",
+    "build:web": "cd web && npm install && npm run build",
+    "build": "npm run build:web && electron-builder --win",
+    "build:dir": "npm run build:web && electron-builder --win --dir"
   },
-  "keywords": ["openclaw", "electron", "ai", "assistant"],
+  "keywords": ["openclaw", "electron", "ai", "chat"],
   "author": "",
   "license": "MIT",
   "devDependencies": {
@@ -38,15 +39,16 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true
     },
-    "buildDependenciesFromSource": false,
-    "npmRebuild": false,
     "files": [
-      "main.js",
-      "package.json",
-      "node_modules/**/*"
+      "electron/**/*",
+      "web/dist/**/*",
+      "node_modules/**/*",
+      "package.json"
     ],
     "extraMetadata": {
-      "main": "main.js"
-    }
+      "main": "electron/main.js"
+    },
+    "buildDependenciesFromSource": false,
+    "npmRebuild": false
   }
 }
