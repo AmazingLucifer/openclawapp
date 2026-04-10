@@ -36,10 +36,10 @@
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
-      "createStartMenuShortcut": true,
-      "installerIcon": "build/icon.ico",
-      "uninstallerIcon": "build/icon.ico"
+      "createStartMenuShortcut": true
     },
+    "buildDependenciesFromSource": false,
+    "npmRebuild": false,
     "files": [
       "main.js",
       "package.json",
