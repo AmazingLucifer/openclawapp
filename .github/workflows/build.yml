@@ -20,7 +20,7 @@ jobs:
           cache: 'npm'
 
       - name: Install root dependencies
-        run: npm ci
+        run: npm install
 
       - name: Install pkg for server packaging
         run: npm install -g pkg
