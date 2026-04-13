@@ -33,7 +33,7 @@ jobs:
       - name: Build server.exe (standalone)
         run: |
           cd server
-          node package-cjs.js
+          node package-cjs.cjs
           pkg index.cjs --targets node18-win-x64 --output ./server.exe
 
       - name: Build Vue frontend
