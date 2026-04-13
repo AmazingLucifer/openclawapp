@@ -33,7 +33,7 @@ jobs:
       - name: Build server.exe (standalone)
         run: |
           cd server
-	  ren package-cjs.js package-cjs.cjs
+	  cmd /c ren package-cjs.js package-cjs.cjs
           node package-cjs.cjs
           pkg index.cjs --targets node18-win-x64 --output ./server.exe
 
