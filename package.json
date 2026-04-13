@@ -9,10 +9,16 @@
     "build": "npm run build:web && electron-builder --win",
     "build:dir": "npm run build:web && electron-builder --win --dir"
   },
-  "keywords": ["openclaw", "electron", "ai", "chat"],
+  "keywords": [
+    "openclaw",
+    "electron",
+    "ai",
+    "chat"
+  ],
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@electron/osx-sign": "^2.3.0",
     "electron": "^33.2.1",
     "electron-builder": "^25.1.8"
   },
@@ -29,7 +35,9 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ]
     },
@@ -42,6 +50,8 @@
     "files": [
       "electron/**/*",
       "web/dist/**/*",
+      "server/**/*",
+      "openclaw-agent/**/*",
       "node_modules/**/*",
       "package.json"
     ],

@@ -1,13 +1,56 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 const { spawn } = require('child_process')
+const fs = require('fs')
 
 let openclawProcess = null
+let serverProcess = null
 let mainWindow = null
 
 const GATEWAY_PORT = 32935
 const GATEWAY_TOKEN = 'f82200ab502dd424fd51b75ac1f7106e926dca9339999ba6'
 const GATEWAY_BASE_PATH = '/qajz5p'
+const SERVER_PORT = 3001
+
+function startServer() {
+  console.log('[SaaS] Starting server...')
+
+  // server 目录（electron 同级目录 server/）
+  const serverDir = path.join(__dirname, '..', 'server')
+  const serverIndex = path.join(serverDir, 'index.js')
+
+  // 检查 server 目录是否存在
+  if (!fs.existsSync(serverDir)) {
+    console.error('[SaaS] Server directory not found:', serverDir)
+    return
+  }
+
+  // 检查是否有打包的 server.exe（Windows 一键安装包模式）
+  const serverExe = path.join(serverDir, 'server.exe')
+  if (process.platform === 'win32' && fs.existsSync(serverExe)) {
+    console.log('[SaaS] Using bundled server.exe')
+    serverProcess = spawn(serverExe, [], {
+      cwd: serverDir,
+      detached: false,
+      stdio: 'pipe',
+      env: { ...process.env, PORT: String(SERVER_PORT) }
+    })
+  } else {
+    // 开发模式：使用 node 运行
+    console.log('[SaaS] Starting with node:', serverIndex)
+    serverProcess = spawn('node', [serverIndex], {
+      cwd: serverDir,
+      detached: false,
+      stdio: 'pipe',
+      env: { ...process.env, PORT: String(SERVER_PORT) }
+    })
+  }
+
+  serverProcess.stdout.on('data', (data) => process.stdout.write('[server] ' + data))
+  serverProcess.stderr.on('data', (data) => process.stderr.write('[server:err] ' + data))
+  serverProcess.on('error', (err) => console.error('[SaaS] Failed to start:', err))
+  serverProcess.on('exit', (code) => console.log('[SaaS] Server exited with code:', code))
+}
 
 function startOpenClaw() {
   console.log('[OpenClaw] Starting gateway...')
@@ -70,20 +113,26 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  // 启动 SaaS 后端
+  startServer()
+  
+  // 启动 OpenClaw gateway
   startOpenClaw()
 
-  // 等待 gateway 就绪
+  // 等待服务就绪
   setTimeout(() => {
     createWindow()
-  }, 4000)
+  }, 5000)
 })
 
 app.on('window-all-closed', () => {
+  if (serverProcess) serverProcess.kill()
   if (openclawProcess) openclawProcess.kill()
   app.quit()
 })
 
 app.on('before-quit', () => {
+  if (serverProcess) serverProcess.kill()
   if (openclawProcess) openclawProcess.kill()
 })
 
