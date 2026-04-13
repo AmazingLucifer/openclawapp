@@ -33,8 +33,7 @@ jobs:
       - name: Build server.exe (standalone)
         run: |
           cd server
-	  cmd /c ren package-cjs.js package-cjs.cjs
-          node package-cjs.cjs
+          node -e "const fs=require('fs');let c=fs.readFileSync('index.js','utf8');c=c.replace(/import\s+{([^}]+)}\s+from\s+'([^']+)'/g,\"const {\$1}=require('\$2')\").replace(/import\s+(\w+)\s+from\s+'([^']+)'/g,\"const \$1=require('\$2')\").replace(/import\s+\*\s+as\s+(\w+)\s+from\s+'([^']+)'/g,\"const \$1=require('\$2')\").replace(/import\s+'([^']+)'/g,\"\").replace(/export\s+default\s+/g,'module.exports = ').replace(/export\s+/g,'// export ');fs.writeFileSync('index.cjs',c);"
           pkg index.cjs --targets node18-win-x64 --output ./server.exe
 
       - name: Build Vue frontend
