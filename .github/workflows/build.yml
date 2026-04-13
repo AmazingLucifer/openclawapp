@@ -25,6 +25,11 @@ jobs:
       - name: Install pkg for server packaging
         run: npm install -g pkg
 
+      - name: Install server dependencies
+        run: |
+          cd server
+          npm install
+
       - name: Build server.exe (standalone)
         run: |
           cd server
